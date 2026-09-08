@@ -1,0 +1,136 @@
+---
+title: "lab_01"
+author: "Derek Willis, adapted by Aidan Hughes"
+date: "2026-08-25"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# Turn off scientific notation
+options(scipen=999)
+```
+
+## About this lab
+
+To complete this lab, you need to: \* run existing code as directed (look for **Task**). \* modify existing code as directed (look for **Task**). \* write code in empty codeblocks provided to answer questions included (look for **Q**). \* write out the answer in the form of a complete sentence in the space given (look for **A**). When you are finished, commit changes and push to your personal GitHub repo, then submit the URL to this document on ELMS.
+
+Remember to add any new verbs or concepts to your reference notebook!
+
+## Load libraries and establish settings
+
+**Task** Run the codeblock below to load the Tidyverse. To run the codeblock, hit the little green play button in the upper right corner of the gray area (the codeblock) below.
+
+```{r}
+# Load the tidyverse. If you have not installed the tidyverse already, remove the # from the next line and run it first.  
+# install.packages('tidyverse')
+library(tidyverse)
+```
+
+## Load Data
+
+We're going to load the slice of WinRed contribution data from West Virginia, which is in a file called `lab_01.rds`
+
+**Task** Using the example from the pre_lab, write code to load the RDS file and assign it to a good variable name.
+
+```{r}
+wv_winred_contributions <- read_rds("lab_01.rds")
+```
+
+## Examine Data
+
+**Task** Run the codeblock below to use glimpse to get a sense of the column names, types and sample data.
+
+```{r}
+# put the name of your data set, which you named in the last step, inside the () below
+glimpse(wv_winred_contributions)
+```
+
+
+**Q1** How many rows and columns does this dataframe have?
+
+
+**A1**
+40,441 rows, 24 columns
+
+## Answer questions
+
+**Q2** Which West Virginia city provided the largest number of contributions? How many?
+
+Hint: you'll need to use group_by() |> summarise() here. What column are we grouping by? Then, what should go inside the summarise() part? Then, rather than clicking through the 500+ cities to find the largest one, use the same function we used in our pre-lab to sort the data from largest number to the smallest.
+
+**A2**
+Charleston provided the largest number of contributions (3,226, plus a further 787 from CHARLESTON)
+
+```{r}
+wv_winred_contributions |>
+  group_by(city) |>
+  summarise(
+    count_contribs = n()
+  ) |>
+arrange(desc(count_contribs))
+```
+
+**Q3** Which West Virginia cities accounted for the fewest contributions? You don't have to name all of them, but list a few. How many of those cities are there, roughly speaking?
+
+**A3**
+There are about 63 cities with only one contribution each (though calling them "cities" might be a stretch). They include Wolfcreek, Winifrede, and "milton," among others.
+
+```{r}
+# What are we supposed to do here
+```
+
+**Q4** What's your best educated guess to explain why the city identified in question 2 had more contributions compared to the cities identified in question 3? Hint: you won't find the answer in the data, you'll need to do some quick web research. You do not need to write any code for this question, so no codeblock is provided.
+
+**A4**
+
+Charleston is the largest city in West Virginia. Many of the other places in the top 10 for contributions (like Wheeling, Martinsburg, and the confusingly named Charles Town) are also among the largest towns/cities in the state. Charles Town and Martinsburg are also in the part of West Virginia's eastern panhandle that's closest to DC, which is one of the wealthiest parts of the state, so it makes sense that residents there would have more money to spend on political donations.
+
+**Q5** What recipient got the largest total amount of money? How many contributions did it receive? And what was the average donation it received?
+
+Hint: Since there three distinct questions here, you'll need to do multiple things inside summarise() this time.
+
+Hint 2: "aggregate_amount" is NOT the column you want to use here.
+
+**A5**
+
+```{r}
+wv_winred_contributions |>
+  group_by(memo_text) |>
+  summarise(
+    count_contribs = n(),
+    total_amount = sum(amount),
+    mean_amount = mean(amount),
+    median_amount = median(amount)
+  ) |>
+  arrange(desc(total_amount))
+```
+
+**Q6** What is that top recipient and what explains its popularity? Hint: this will require web research, you won't be able to answer this purely from the data set. You do not need to write any code for this question, so no codeblock is provided.
+
+**A6**
+The top recipient, by a massive margin, is the Trump National Committee. Part of this is almost certainly due to Trump being the Republican presidential nominee (and presidential elections are pretty much always more high-profile than congressional elections) but also donations to Winred surged after Trump's indictment in May 2024, to such an extent that the website crashed.
+
+**BONUS POINTS (do this last / only if you have time at the end)** you might notice that a lot of the top recipient committees seem to be tied to the same person, and some even have nearly-identical committee names. What might be going on here? (You don't need to get this RIGHT, just give me an educated guess or two.)
+
+See above, the Trump fanbase is very, uh, *passionate*
+
+**Q7**. Using the answer from A5 as a starting point, produce a summary table that has the following information for each recipient: \* count of contributions \* total amount of all contributions \* the average contribution amount \* the median contribution amount \* the smallest contribution amount \* the largest contribution amount
+
+Store it as a variable object called `wv_summary` so that you can examine it with the data viewer. What newsworthy nuggets jump out at you that you could imagine dropping into a news story? Write a few summary sentences with overall findings.
+
+**A7**.
+More than four times as many people donated to the Trump National Committee as to the next-most popular recipient--which was the Trump Save America PAC. It would be interesting to compare that ratio to the amount of Democratic donations to presidential candidates on ActBlue, to see if the Republican base is specifically obsessed with Trump or if this is just what always happens during presidential election years. Also, Eli Crane for Congress is weirdly high up on the list for someone who was not a sitting member of Congress at the time. He's in 17th place, which is ahead of major Senate candidates like Marco Rubio, Kari Lake and Dave McCormick, and he's noticeably ahead of most other swing-seat House candidates.
+```{r}
+wv_summary<- wv_winred_contributions |>
+  group_by(memo_text) |>
+  summarise(
+    count_contribs = n(),
+    total_amount = sum(amount),
+    mean_amount = mean(amount),
+    median_amount = median(amount),
+    min_amount = min(amount),
+    max_amount = max(amount)
+  ) |>
+  arrange(desc(total_amount))
+```
