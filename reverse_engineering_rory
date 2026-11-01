@@ -1,0 +1,38 @@
+3:
+
+```{r}
+king_contribs <- read.csv("king_contribs.csv")
+```
+
+```{r}
+king_contribs |>
+  arrange(desc(Amount.in..))
+```
+Results: King received $534,478 from New York and $252,098 from California
+
+5:
+
+```{r}
+moore_contribs <- read.csv("moore_contribs.csv")
+```
+
+```{r}
+moore_contribs |>
+  arrange(desc(Amount.in..))
+```
+
+```{r}
+ny_donations <- moore_contribs |>
+  filter(Amount.in..=="New York")
+```
+
+```{r}
+cali_donations <- moore_contribs |>
+  filter(Amount.in..=="California")
+```
+
+```{r}
+full_join (ny_donations,cali_donations,by = Amount.in..)
+```
+
+Unfortunately, the final few lines of code did not work, for reasons we couldn't figure out.
