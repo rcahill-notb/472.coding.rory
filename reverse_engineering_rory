@@ -36,3 +36,23 @@ full_join (ny_donations,cali_donations,by = Amount.in..)
 ```
 
 Unfortunately, the final few lines of code did not work, for reasons we couldn't figure out.
+----------------------------------------------------------------------------- NEW STUFF BELOW THIS LINE
+```{r}
+perez_contribs <- read_csv("perez_contribs.csv")
+```
+```{r}
+perez_out_state_donations <- read.csv("perez_contribs.csv")
+```
+
+
+
+```{r}
+#list of values or a vector having numerical values
+perez_out_state_donations <- c(949,1030,22745,1071,234749,17692,2576,250580,10,110640,21468,252,400,28497,12755,29,1651,8525,30,6766,116492,22370,56736,2810,5045,500,105,15277,566,36227,6296,226208,15765,5,0,23,3780,30975,20223,1123,125,35865,97022,1038,2728,123179,45341,305,48490,1000)
+
+#calculates the sum of the values 
+sum(perez_out_state_donations)
+```
+
+I researched the code above on digitalocean.com. I added up all the values for money donated to the Perez campaign in every state except Maryland, and got a figure of 1,638,034, which is indeed "almost 1.7 million" (although "over 1.6 million" might be a more accurate way to phrase it)
+
